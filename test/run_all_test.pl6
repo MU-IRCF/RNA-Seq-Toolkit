@@ -24,14 +24,18 @@
 use Test;
 
 my @dirs = dir( test => / TestData / );
+my @test-match = <XLOC_000024 yes yes>;
 
-for @dirs -> $dir
+say "running tests for these directories: @dirs[]";
+say "Please be patient; these might take 15 minutes to run.";
+
+for (@dirs Z @test-match).flat -> $dir, $test-match
 {
     put "\n$dir";
     chdir $dir;
-    #shell("./setup_and_test.sh");
-    #my $result-text   = qqx { grep XLOC_000024 cuffdiff/gene_exp.diff };
-    my $result-text = slurp 'expected.txt';
+    shell('./setup_and_test.sh >& test.log');
+    my $result-text   = qqx { grep $test-match cuffdiff/gene_exp.diff };
+    #my $result-text = slurp 'expected.txt';
     my $expected-text = slurp 'expected.txt';
     compare-strings($result-text, $expected-text);
     chdir '..';
