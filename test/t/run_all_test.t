@@ -25,7 +25,7 @@ use Test;
 
 plan 70;
 
-my $RELATIVE-TOLERANCE = 0.10;
+my $RELATIVE-TOLERANCE = 0.40;
 
 my @dirs = dir( test => / TestData / );
 my @test-match = <XLOC_000024 yes yes>;
@@ -37,23 +37,25 @@ diag "Please be patient; these might take 40 minutes to run.";
 
 my @promises;
 
-# TODO: Make all tests run in parallel
+# Run all tests, in parallel
+for @dirs.race(:batch(1)) -> $dir
+{
+    diag "Running tests in $dir";
+    shell("cd $dir; ./setup_and_test.sh >& test.log");
+}
+
+# check all test results
 for @dirs.keys -> $index
 {
     my $dir        = @dirs[$index]; 
     my $test-match = @test-match[$index];
 
-    diag "Working in $dir";
-
-    # to avoid chdir blunders, only doing directory changes inside the shell
-    shell("cd $dir; ./setup_and_test.sh >& test.log");
+    diag "Verifying test results for $dir"; 
 
     my $expected-text = slurp "$dir/expected.txt";
     my $result-text   = qqx { grep $test-match $dir/cuffdiff/gene_exp.diff };
     compare-strings($result-text, $expected-text, "in $dir: ");
 }
-
-
 
 sub compare-strings ( $result-text, $expected-text, $optional-prefix='' )
 {
@@ -67,7 +69,7 @@ sub compare-strings ( $result-text, $expected-text, $optional-prefix='' )
 
         for (@result-fields[7..12] Z @expected-fields[7..12]).flat -> $result-value, $expected-value
         {
-            is-approx $result-value.Num, $expected-value.Num, :rel-tol($RELATIVE-TOLERANCE), $optional-prefix ~ "result within relative tolerance of $RELATIVE-TOLERANCE";
+            is-approx $result-value.Num, $expected-value.Num, :rel-tol($RELATIVE-TOLERANCE), $optional-prefix ~ "result of $result-value is within $RELATIVE-TOLERANCE of expected $expected-value";
         }
     }
 }

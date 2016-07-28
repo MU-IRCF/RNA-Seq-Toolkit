@@ -23,6 +23,7 @@
 
 use Test;
 
+plan 91;
 
 my $RELATIVE-TOLERANCE = 0.10;
 
@@ -31,43 +32,30 @@ my @test-match = <XLOC_000024 yes yes>;
 
 die "uneqaul number of tests and directories" if @dirs.elems != @test-match.elems;
 
-note "running tests for these directories: @dirs[]";
-note "Please be patient; these might take 15 minutes to run.";
+diag "running tests for these directories: @dirs[]";
+diag "Please be patient; these might take 15 minutes to run.";
 
 my @promises;
 
-for @dirs.keys.race( :batch(1), :degree(@dirs.elems) ) -> $index
+for @dirs.keys -> $index
 {
-    
-    my $promise = Promise.start( {
-        my $dir        = @dirs[$index]; 
-        my $test-match = @test-match[$index];
+    my $dir        = @dirs[$index]; 
+    my $test-match = @test-match[$index];
 
-        note "Working in $dir";
+    diag "Working in $dir";
 
-        my $expected-text = slurp "$dir/expected.txt";
-        my $result-text   = $expected-text;
-        compare-strings($result-text, $expected-text, "in $dir:");
+    my $expected-text = slurp "$dir/expected.txt";
+    my $result-text   = $expected-text;
 
-        if $dir.basename eq 'TestData_1'
-        {
-            my $nearly = slurp "$dir/nearly_expected.txt";
+    if $dir.basename eq 'TestData_1'
+    {
+        my $nearly = slurp "$dir/nearly_expected.txt";
+        compare-strings($nearly, $expected-text, '');
+    }
 
-            compare-strings($nearly, $expected-text, '');
-        }
-
-    });
-    $promise.then( { say "No longer working in @dirs[$index] (hopefully finished)" } );
-    
-    @promises.append($promise);
+    compare-strings($result-text, $expected-text, "in $dir:");
+    sleep 1;
 }
-
-# give promises a chance to get caught up
-sleep 1;
-
-await Promise.allof(@promises);
-
-note "Jobs no longer running in @dirs[]";
 
 sub compare-strings ( $result-text, $expected-text, $optional-prefix='' )
 {
