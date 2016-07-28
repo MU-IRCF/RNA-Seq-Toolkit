@@ -33,7 +33,7 @@ my @test-match = <XLOC_000024 yes yes>;
 die "uneqaul number of tests and directories" if @dirs.elems != @test-match.elems;
 
 diag "running tests for these directories: @dirs[]";
-diag "Please be patient; these might take 40 minutes to run.";
+diag "Please be patient; these might take 10 minutes to run.";
 
 my @promises;
 

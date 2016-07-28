@@ -32,17 +32,12 @@ my @test-match = <XLOC_000024 yes yes>;
 
 die "uneqaul number of tests and directories" if @dirs.elems != @test-match.elems;
 
-diag "running tests for these directories: @dirs[]";
-diag "Please be patient; these might take 15 minutes to run.";
-
 my @promises;
 
 for @dirs.keys -> $index
 {
     my $dir        = @dirs[$index]; 
     my $test-match = @test-match[$index];
-
-    diag "Working in $dir";
 
     my $expected-text = slurp "$dir/expected.txt";
     my $result-text   = $expected-text;
@@ -61,7 +56,6 @@ sub compare-strings ( $result-text, $expected-text, $optional-prefix='' )
 {
     for ($result-text.lines() Z $expected-text.lines() ).flat -> $result, $expected
     {
-
         my @result-fields   = $result.split("\t");
         my @expected-fields = $expected.split("\t");
 

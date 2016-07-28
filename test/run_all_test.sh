@@ -16,11 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RST.  If not, see <http://www.gnu.org/licenses/>.
 #
-echo 'Running all tests.'
 
 ./refresh_test_dirs
 
-prove -e '' t/ |& tee test_results.log
+prove -e '' t/ &> test_results.log
 
 # for dir in `ls -1d TestData_*`
 # do
