@@ -1,5 +1,0 @@
-echo "Deleting test data directories"
-rm -rf TestData_?
-
-echo "Checking out test data directories from git"
-git checkout TestData_1 TestData_2 TestData_3

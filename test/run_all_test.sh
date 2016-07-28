@@ -16,18 +16,21 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RST.  If not, see <http://www.gnu.org/licenses/>.
 #
+# Modified by Christopher Bottoms
 
-./refresh_test_dirs
+module load samtools/samtools-1.3
+module load cufflinks/cufflinks-2.2.1
+module load tophat/tophat-2.1.1
+module load bowtie/bowtie-1.1.2
+module load bowtie2/bowtie2-2.2.5
+module load fastx_toolkit/fastx_toolkit-0.0.13
 
-prove -e '' t/ &> test_results.log
+if [ -d ../.git ]
+then
+    t/refresh_test_dirs.sh
+else
+    echo "With no git repository found, these tests may only work once"
+fi
 
-# for dir in `ls -1d TestData_*`
-# do
-#     echo ""
-#     echo "$dir"
-#     cd $dir
-#     ./setup_and_test.sh
-#     ./test_result
-#     cd ..
-# done
-# 
+# run each test in t/ (-e '' makes it use each test's own shebang for execution)
+prove -e '' t/ |& tee t/test_results.log
