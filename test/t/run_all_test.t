@@ -23,12 +23,10 @@
 
 use Test;
 
-plan 70;
-
 my $RELATIVE-TOLERANCE = 0.40;
 
-my @dirs = dir( test => / TestData / );
-my @test-match = <XLOC_000024 yes yes>;
+my @dirs = dir( test => /^ TestData_ / );
+my @test-match = <XLOC_000024 yes yes yes>;
 
 die "uneqaul number of tests and directories" if @dirs.elems != @test-match.elems;
 
@@ -55,7 +53,16 @@ for @dirs.keys -> $index
     my $expected-text = slurp "$dir/expected.txt";
     my $result-text   = qqx { grep $test-match $dir/cuffdiff/gene_exp.diff };
     compare-strings($result-text, $expected-text, "in $dir: ");
+
+    # Throw in a nearly check too
+    if $dir.basename eq 'TestData_1'
+    {
+        my $nearly = slurp "$dir/nearly_expected.txt";
+        compare-strings($nearly, $expected-text, '');
+    }
 }
+
+done-testing;
 
 sub compare-strings ( $result-text, $expected-text, $optional-prefix='' )
 {
