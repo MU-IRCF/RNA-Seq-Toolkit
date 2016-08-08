@@ -120,16 +120,16 @@ case "$osname" in
 
     Linux)
             #TEMP=`getopt -o et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:vbL:M:q:n:E:QdNoBG: --long full,transcripts,partial,mate_inner_distance:,min_intron_length:,max_intron_length:,procs:,librarytype:,indexpath:,refseq:,seonly,adapter_seq:,preprocess,preprocess_only,splice_mismatches:,min_anchor_length:,mate_std_dev:,min_isoform_fraction:,max_multihits:,coverage_search,butterfly_search,segment_length:,segment_mismatches:,min_qual:,min_length:,percent_high_quality:,solexa,dev,oldid,bowtie1,solexa_p13,max_mismatches: -- "$@"`
-            TEMP=`getopt -o et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:vbL:M:q:n:E:QdNoBG:kC --long full,transcripts,partial,mate_inner_distance:,min_intron_length:,max_intron_length:,procs:,librarytype:,indexpath:,refseq:,seonly,adapter_seq:,preprocess,preprocess_only,splice_mismatches:,min_anchor_length:,mate_std_dev:,min_isoform_fraction:,max_multihits:,coverage_search,butterfly_search,segment_length:,segment_mismatches:,min_qual:,min_length:,percent_high_quality:,solexa,dev,oldid,bowtie1,solexa_p13,max_mismatches:,nonewtranscripts,leave_temp -- "$@"`
+            TEMP=`getopt -o et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:vbL:M:q:n:E:QdNoBG:kC:z --long full,transcripts,partial,mate_inner_distance:,min_intron_length:,max_intron_length:,procs:,librarytype:,indexpath:,refseq:,seonly,adapter_seq:,preprocess,preprocess_only,splice_mismatches:,min_anchor_length:,mate_std_dev:,min_isoform_fraction:,max_multihits:,coverage_search,butterfly_search,segment_length:,segment_mismatches:,min_qual:,min_length:,percent_high_quality:,solexa,dev,oldid,bowtie1,solexa_p13,max_mismatches:,nonewtranscripts,leave_temp:,gzip -- "$@"`
             ;;
 
     Darwin)
-            TEMP=`getopt et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:vbL:M:q:n:E:QdNoBG:kC $*`
+            TEMP=`getopt et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:vbL:M:q:n:E:QdNoBG:kC:z $*`
             ;;
 
         *)
             #TEMP=`getopt -o et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:q:n:E:QdNoBG --long full,transcripts,partial,mate_inner_distance:,min_intron_length:,max_intron_length:,procs:,librarytype:,indexpath:,refseq:,seonly,adapter_seq:,preprocess,preprocess_only,splice_mismatches:,min_anchor_length:,mate_std_dev:,min_isoform_fraction:,max_multihits:,coverage_search,butterfly_search,segment_length:,segment_mismatches:,min_qual:,min_length:,percent_high_quality:,solexa,dev,oldid,bowtie1,solexa_p13,max_mismatches: -- "$@"`
-            TEMP=`getopt -o et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:q:n:E:QdNoBG:kC --long full,transcripts,partial,mate_inner_distance:,min_intron_length:,max_intron_length:,procs:,librarytype:,indexpath:,refseq:,seonly,adapter_seq:,preprocess,preprocess_only,splice_mismatches:,min_anchor_length:,mate_std_dev:,min_isoform_fraction:,max_multihits:,coverage_search,butterfly_search,segment_length:,segment_mismatches:,min_qual:,min_length:,percent_high_quality:,solexa,dev,oldid,bowtie1,solexa_p13,max_mismatches:,nonewtranscripts,leave_temp -- "$@"`
+            TEMP=`getopt -o et:pafhr:i:I:P:l:as:A:ROm:c:S:F:g:q:n:E:QdNoBG:kC:z --long full,transcripts,partial,mate_inner_distance:,min_intron_length:,max_intron_length:,procs:,librarytype:,indexpath:,refseq:,seonly,adapter_seq:,preprocess,preprocess_only,splice_mismatches:,min_anchor_length:,mate_std_dev:,min_isoform_fraction:,max_multihits:,coverage_search,butterfly_search,segment_length:,segment_mismatches:,min_qual:,min_length:,percent_high_quality:,solexa,dev,oldid,bowtie1,solexa_p13,max_mismatches:,nonewtranscripts,leave_temp:,gzip -- "$@"`
             ;;
 esac
 
@@ -175,6 +175,7 @@ while true ; do
         -d|--dev) dev=1 ; shift ;;
         -C|--leave_temp) leave_temp=1 ; shift ;;
         -N|--oldid) oldid=1 ; shift ;;
+        -z|--gzip) fq_ext='fq.gz' ; shift ;;
         --) shift ; break ;;
         *) break ;;
     esac
@@ -294,8 +295,8 @@ then
                 echo "adapter_trim.pl --prefix --fastq --infile set2.$fq_ext --outfile set2_noadapters.$fq_ext -adapterseq $adapter_seq --overwrite --printall --notwoadapters"
                 adapter_trim.pl --prefix --fastq --infile set2.$fq_ext --outfile set2_noadapters.$fq_ext -adapterseq $adapter_seq --overwrite --printall --notwoadapters
                 echo "linking to noadapter files"
-                #ln -sf set1_noadapters.$fq_ext set1.fq
-                #ln -sf set2_noadapters.$fq_ext set2.fq
+                #ln -sf set1_noadapters.$fq_ext set1.$fq_ext
+                #ln -sf set2_noadapters.$fq_ext set2.$fq_ext
                 touch adapter_trim_finished
             else
                 echo "use cutadapt"
@@ -305,8 +306,8 @@ then
                 $($cutadapt --anywhere=$adapter_seq --output=set2_noadapters.$fq_ext set2.$fq_ext 2> cutadapt_set2.err 1> cutadapt_set1.log)
                 touch cutadapt_finished
             fi
-            ln -sf set1_noadapters.$fq_ext set1.fq
-            ln -sf set2_noadapters.$fq_ext set2.fq
+            ln -sf set1_noadapters.$fq_ext set1.$fq_ext
+            ln -sf set2_noadapters.$fq_ext set2.$fq_ext
         fi
 #
         echo "preprocess_fq.sh $preprocess_flags"
@@ -329,10 +330,10 @@ then
         fi
 #
         echo "linking new files"
-        ln -fs set1.fq.matched.$fq_ext read_1
-        ln -fs set2.fq.matched.$fq_ext read_2
-        ln -fs set1.fq.nomate.$fq_ext read_1.1
-        ln -fs set2.fq.nomate.$fq_ext read_2.1
+        ln -fs set1.$fq_ext.matched.$fq_ext read_1
+        ln -fs set2.$fq_ext.matched.$fq_ext read_2
+        ln -fs set1.$fq_ext.nomate.$fq_ext read_1.1
+        ln -fs set2.$fq_ext.nomate.$fq_ext read_2.1
     else # then these are single-end data
         echo "working with single-end seuqence data"
         if [[ $adapter_seq != 'NULL' ]] # then we want to remove adapter sequence
@@ -350,7 +351,7 @@ then
                 $($cutadapt --anywhere=$adapter_seq --output=set1_noadapters.$fq_ext set1.$fq_ext 2> cutadapt_set1.err 1> cutadapt_set1.log)
                 touch cutadapt_finished
             fi
-            ln -sf set1_noadapters.$fq_ext set1.fq
+            ln -sf set1_noadapters.$fq_ext set1.$fq_ext
         fi 
         echo "preprocess_fq.sh $preprocess_flags"
         preprocess_fq.sh $preprocess_flags
