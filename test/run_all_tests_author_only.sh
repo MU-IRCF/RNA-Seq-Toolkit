@@ -16,15 +16,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RST.  If not, see <http://www.gnu.org/licenses/>.
 #
-echo 'Running all tests.'
+# Modified by Christopher Bottoms
 
-for dir in `ls -1d TestData_*`
-do
-    echo ""
-    echo "$dir"
-    cd $dir
-    ./setup_and_test.sh
-    ./test_result
-    cd ..
-done
+module load samtools-1.3
+module load cufflinks-2.2.1
+module load TopHat-2.1.1
+module load bowtie2-2.2.9
 
+if [ -d ../.git ]
+then
+    t/refresh_test_dirs.sh
+else
+    echo "With no git repository found, these tests may only work once"
+fi
+
+# run each test in t/ (-e '' makes it use each test's own shebang for execution)
+prove -e 'perl6' t/*.t6 |& tee t/test_results.log
