@@ -26,7 +26,7 @@ use Test;
 my $RELATIVE-TOLERANCE = 0.40;
 
 my @dirs = dir( test => /^ TestData_ / );
-my @test-match = <XLOC_000024 yes yes yes>;
+my @test-match = <XLOC_000024 yes yes>;
 
 die "uneqaul number of tests and directories" if @dirs.elems != @test-match.elems;
 
