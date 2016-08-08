@@ -33,4 +33,5 @@ else
 fi
 
 # run each test in t/ (-e '' makes it use each test's own shebang for execution)
-prove -e '' t/ |& tee t/test_results.log
+prove -e 'perl6' t/*.t6 |& tee t/test_results.log
+
