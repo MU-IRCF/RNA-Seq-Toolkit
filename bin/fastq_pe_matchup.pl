@@ -320,7 +320,7 @@ sub _fastq_out {
 
     $id .= " $extra" if ($extra);
 
-    print $filehandle "\@$id\n$seqstring\n\+$id\n$qualstring\n";
+    print $filehandle "\@$id\n$seqstring\n\+\n$qualstring\n";
     return 1;
 }
 
