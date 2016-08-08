@@ -23,11 +23,9 @@
 
 use Test;
 
-plan 91;
-
 my $RELATIVE-TOLERANCE = 0.10;
 
-my @dirs = dir( test => / TestData / );
+my @dirs = dir( test => /^ TestData_ / );
 my @test-match = <XLOC_000024 yes yes>;
 
 die "uneqaul number of tests and directories" if @dirs.elems != @test-match.elems;
@@ -51,6 +49,8 @@ for @dirs.keys -> $index
     compare-strings($result-text, $expected-text, "in $dir:");
     sleep 1;
 }
+
+done-testing;
 
 sub compare-strings ( $result-text, $expected-text, $optional-prefix='' )
 {
