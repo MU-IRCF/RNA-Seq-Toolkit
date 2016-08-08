@@ -294,8 +294,8 @@ then
                 echo "adapter_trim.pl --prefix --fastq --infile set2.$fq_ext --outfile set2_noadapters.$fq_ext -adapterseq $adapter_seq --overwrite --printall --notwoadapters"
                 adapter_trim.pl --prefix --fastq --infile set2.$fq_ext --outfile set2_noadapters.$fq_ext -adapterseq $adapter_seq --overwrite --printall --notwoadapters
                 echo "linking to noadapter files"
-                #ln -sf set1_noadapters.$fq_ext set1.fq
-                #ln -sf set2_noadapters.$fq_ext set2.fq
+                #ln -sf set1_noadapters.$fq_ext set1.$fq_ext
+                #ln -sf set2_noadapters.$fq_ext set2.$fq_ext
                 touch adapter_trim_finished
             else
                 echo "use cutadapt"
@@ -305,8 +305,8 @@ then
                 $($cutadapt --anywhere=$adapter_seq --output=set2_noadapters.$fq_ext set2.$fq_ext 2> cutadapt_set2.err 1> cutadapt_set1.log)
                 touch cutadapt_finished
             fi
-            ln -sf set1_noadapters.$fq_ext set1.fq
-            ln -sf set2_noadapters.$fq_ext set2.fq
+            ln -sf set1_noadapters.$fq_ext set1.$fq_ext
+            ln -sf set2_noadapters.$fq_ext set2.$fq_ext
         fi
 #
         echo "preprocess_fq.sh $preprocess_flags"
@@ -350,7 +350,7 @@ then
                 $($cutadapt --anywhere=$adapter_seq --output=set1_noadapters.$fq_ext set1.$fq_ext 2> cutadapt_set1.err 1> cutadapt_set1.log)
                 touch cutadapt_finished
             fi
-            ln -sf set1_noadapters.$fq_ext set1.fq
+            ln -sf set1_noadapters.$fq_ext set1.$fq_ext
         fi 
         echo "preprocess_fq.sh $preprocess_flags"
         preprocess_fq.sh $preprocess_flags
