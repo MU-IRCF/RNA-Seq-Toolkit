@@ -1,0 +1,56 @@
+#!/bin/env perl6
+
+sub MAIN ( $file-name, :$reverse-flag=16, :$forward-flag=0 )
+{
+    my $basename = $file-name.IO.basename;
+    my $ext      = $file-name.IO.extension;
+
+    # Remove extension from basename, if applicable
+    if so $ext 
+    {
+        $basename.subst-mutate( / '.' $ext $/, '');
+    }
+
+    my $forward-name        = "$basename.forward.sam";
+    my $reverse-name        = "$basename.reverse.sam";
+
+    my $fh-forward = open $forward-name, :w; 
+    my $fh-reverse = open $reverse-name, :w;
+
+    # separate forward and reverse reads
+    for $file-name.IO.lines -> $line
+    {
+
+        # copy the header to both outputs
+        if $line.substr(0,1) eq '@'
+        {
+            dd $line;
+
+            $fh-forward.put: $line;
+            $fh-reverse.put: $line;
+
+            # done for this line, go work on the next
+            next;
+        }
+
+        my $flag = $line.split("\t")[1];
+
+        # Print each line to respective file
+        given $flag {
+            when $forward-flag { $fh-forward.put($line) }
+            when $reverse-flag { $fh-reverse.put($line) }
+
+            default { die "Can't handle the flag '$flag'"; }
+        }
+    }
+
+    $fh-forward.close;
+    $fh-reverse.close;
+    
+    for <forward reverse> -> $direction
+    {
+        shell "module load RNA-Seq-Toolkit; samtools sort     $basename.$direction.sam          > $basename.{$direction}.sorted.bam";
+        shell "module load RNA-Seq-Toolkit; samtools depth -a $basename.{$direction}.sorted.bam > $basename.{$direction}.depth.txt";
+    }
+
+}

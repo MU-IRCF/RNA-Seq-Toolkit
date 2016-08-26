@@ -1,0 +1,8 @@
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:ref_linkage_group	LN:10
+@PG	ID:bowtie2	PN:bowtie2	VN:2.2.5	CL:"bowtie2-align-s --wrapper basic-0 -x ../index/refseq --passthrough -U set1.fq"
+read_03	0	ref_linkage_group	3	42	2M	*	0	0	GG	DD	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU
+read_01	0	ref_linkage_group	1	42	2M	*	0	0	GG	?D	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:50	YT:Z:UU
+read_04	0	ref_linkage_group	4	42	2M	*	0	0	GG	DD	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU
+read_05	16	ref_linkage_group	5	42	2M	*	0	0	GG	II	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU
+read_02	16	ref_linkage_group	2	42	2M	*	0	0	GG	II	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:49	YT:Z:UU
