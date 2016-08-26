@@ -49,8 +49,8 @@ sub MAIN ( $file-name, :$reverse-flag=16, :$forward-flag=0 )
     
     for <forward reverse> -> $direction
     {
-        shell "module load RNA-Seq-Toolkit; samtools sort     $basename.$direction.sam          > $basename.{$direction}.sorted.bam";
-        shell "module load RNA-Seq-Toolkit; samtools depth -a $basename.{$direction}.sorted.bam > $basename.{$direction}.depth.txt";
+        shell "samtools sort     $basename.$direction.sam          > $basename.{$direction}.sorted.bam";
+        shell "samtools depth -a $basename.{$direction}.sorted.bam > $basename.{$direction}.depth.txt";
     }
 
 }
