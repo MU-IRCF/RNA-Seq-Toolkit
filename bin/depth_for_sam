@@ -47,10 +47,10 @@ sub MAIN ( $file-name, :$reverse-flag=16, :$forward-flag=0 )
     $fh-forward.close;
     $fh-reverse.close;
     
-    for <forward reverse> -> $direction
+    for <<$basename "$basename.forward" "$basename.reverse">> -> $base
     {
-        shell "samtools sort     $basename.$direction.sam          > $basename.{$direction}.sorted.bam";
-        shell "samtools depth -a $basename.{$direction}.sorted.bam > $basename.{$direction}.depth.txt";
+        shell "samtools sort     $base.sam        > $base.sorted.bam";
+        shell "samtools depth -a $base.sorted.bam > $base.depth.txt";
     }
 
 }
